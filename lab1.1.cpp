@@ -1,4 +1,6 @@
 #include <iostream>
+#include<ios>
+#include<limits>
 #include <fstream>
 using namespace std;
 long int f_one(int x, int n){
@@ -20,11 +22,21 @@ double f_two(double x, int n){
     }
     return y;
 }
-/*
-bool monkeyCheck(){
-    return true;
+
+int monkeyInput(string q){
+    int res;
+    cout << q;
+    cin >> res;
+    if(cin.fail()){
+        cin.clear();
+        cin.ignore(numeric_limits<streamsize>::max(), '\n');
+        cout << "Please write an integer\n";
+        return monkeyInput(q);
+    }
+    cin.ignore(numeric_limits<streamsize>::max(), '\n');
+    return res;
 }
-*/
+
 bool ask(string question){
     char answ;
     ask:
@@ -40,66 +52,88 @@ bool ask(string question){
             goto ask;
     }
 }
-void out(double y, bool first){ 
+void out(double y, double x, bool first){ 
     static bool answ = false;
     ofstream res;
     if(first){
-        answ = ask("would you like to save the result to the file?");
+        answ = ask("would you like to also save the result to the file?");
     }
     if(answ){
         res.open("results.txt", ios::app);
         res << y << endl;
         res.close();
     }
-    cout << y << endl;
+    cout << "in: " << x << " out: " << y << endl;
 }
 int main(){
-    int x, n;
-    int b, step, a = 1;
+    int n, mode;
+    double x, b, step, a;
     bool is_first;
     string file;
     ifstream finp;
     start:
     is_first = true;
-    cout << "write the name of input file/numbers x and n/ the word \"range\" followed by n, a, b and step \n";
-    cin.ignore(4, '\n' );
-    cin >> x >> n;
-    if (cin.fail()){
-        cin.clear(); 
-        cin >> file;
-        if(file == "range"){
-            cin.ignore(5, '\n' );
-            cin >> n >> a >> b >> step;
-            goto cycle;
-        }else if(file == "help"){
-            cout << "help the monkey";
-        }
-        finp.open(file, ios::in);
-        if(finp.fail()){
-            cout << "file does not exist try one more time\n";
-            goto start;
-        }
+    cout << "Please select mode of input\n"
+    "1 for input of a file \n"
+    "2 for input of values x and n \n"
+    "3 for calculation of values in the given range \n";
+    mode = monkeyInput("Choose your option: ");
+    redo:
+    switch(mode){
+        case 1:
+            getFileName:
+            cout << "write file name for input: ";
+            cin >> file;
+            finp.open(file, ios::in);
+            if(finp.fail()){
+                cout << "file does not exist try one more time\n";
+                cin.ignore(numeric_limits<streamsize>::max(), '\n');
+                goto getFileName;
+            }
+            break;
+        case 2:
+            x = monkeyInput("Please enter the number for x: ");
+            n = monkeyInput("Please enter the number for n: ");
+            break;
+        case 3:
+            file = "range";
+            n = monkeyInput("Please enter the number for n: ");
+            a = monkeyInput("Please enter the number where the will cycle start: ");
+            b = monkeyInput("Please enter the number where the will cycle end: ");
+            step = monkeyInput("Please enter the number for step of the cycle: ");
+            if(step <= 0){
+                cout << "step must be greater than 0\n";
+                goto redo;
+            }else if(a >= b){
+                cout << "end of the range must be greater than it`s start";
+                goto redo;
+            }
+            break;
+        default:
+            cout << "please enter value from 1 to 3\n";
+            goto redo;
     }
-    cycle:
     while(true){
-        if(finp.is_open()){
+        if(mode == 1){
             finp >> x >> n;
-        }else if(file == "range" && a <= b){
+        }else if(mode == 2 && a < b){
             x = a;
             a += step;
         }
-        if ((n > 3 || (n > -6 && x < -5))&& !cin.fail()){
+        if ((n > 3 || (n > -6 && x < -5)) && !cin.fail()){
             if(x < -5){
-                out(f_one(x, n), is_first);
+                out(f_one(x, n), x, is_first);
             }else if(x >= -5){
-                out(f_two(x, n), is_first);
+                out(f_two(x, n), x, is_first);
             }
             is_first = false;
         }else{
-            cout << "false input data try one more time\n";
-            goto start;
+            cout << "false input data\n"
+            "n must be either greater than 3, or greater than -6(if x is less than 5\n"
+            "try one more time\n";
+            goto redo;
         }
-        if (!finp.is_open() && a > b){
+        if (mode != 1 && a >= b){
             if(ask("do you want to end the program?")){
                 return 0;
             }
