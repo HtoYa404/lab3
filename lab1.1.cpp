@@ -23,8 +23,8 @@ double f_two(double x, int n){
     return y;
 }
 
-int monkeyInput(string q){
-    int res;
+double monkeyInput(string q){
+    double res;
     cout << q;
     cin >> res;
     if(cin.fail()){
@@ -40,7 +40,7 @@ int monkeyInput(string q){
 bool ask(string question){
     char answ;
     ask:
-    cout << question << " y/n\n";
+    cout << question << " y/n: ";
     cin >> answ;
     switch(answ){
         case 'y':
@@ -116,7 +116,7 @@ int main(){
     while(true){
         if(mode == 1){
             finp >> x >> n;
-        }else if(mode == 2 && a < b){
+        }else if(mode == 3 && a <= b){
             x = a;
             a += step;
         }
@@ -133,7 +133,7 @@ int main(){
             "try one more time\n";
             goto redo;
         }
-        if (mode != 1 && a >= b){
+        if (mode == 1 || a > b){
             if(ask("do you want to end the program?")){
                 return 0;
             }
