@@ -65,6 +65,7 @@ void out(double y, double x, bool first){
     }
     cout << "in: " << x << " out: " << y << endl;
 }
+
 int main(){
     int n, mode;
     double x, b, step, a;
@@ -86,6 +87,7 @@ int main(){
             cin >> file;
             finp.open(file, ios::in);
             if(finp.fail()){
+                finp.clear();
                 cout << "file does not exist try one more time\n";
                 cin.ignore(numeric_limits<streamsize>::max(), '\n');
                 goto getFileName;
@@ -96,7 +98,6 @@ int main(){
             n = monkeyInput("Please enter the number for n: ");
             break;
         case 3:
-            file = "range";
             n = monkeyInput("Please enter the number for n: ");
             a = monkeyInput("Please enter the number where the will cycle start: ");
             b = monkeyInput("Please enter the number where the will cycle end: ");
@@ -133,7 +134,7 @@ int main(){
             "try one more time\n";
             goto redo;
         }
-        if (mode == 1 || a > b){
+        if (mode == 2 || (a > b && mode == 3)){
             if(ask("do you want to end the program?")){
                 return 0;
             }
