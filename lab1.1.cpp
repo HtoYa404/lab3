@@ -52,6 +52,7 @@ bool ask(string question){
             goto ask;
     }
 }
+
 void out(double y, double x, bool first){ 
     static bool answ = false;
     ofstream res;
