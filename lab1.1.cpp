@@ -42,6 +42,7 @@ bool ask(string question){
     ask:
     cout << question << " y/n: ";
     cin >> answ;
+    cin.ignore(numeric_limits<streamsize>::max(), '\n');
     switch(answ){
         case 'y':
             return true;
@@ -107,7 +108,7 @@ int main(){
                 cout << "step must be greater than 0\n";
                 goto redo;
             }else if(a >= b){
-                cout << "end of the range must be greater than it`s start";
+                cout << "end of the range must be greater than it`s start\n";
                 goto redo;
             }
             break;
