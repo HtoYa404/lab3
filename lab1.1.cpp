@@ -3,6 +3,7 @@
 #include<limits>
 #include <fstream>
 using namespace std;
+
 long int f_one(int x, int n){
     long long y = 0;
     for(int i = -6; i<=n; ++i){
@@ -25,15 +26,26 @@ double f_two(double x, int n){
 
 double monkeyInput(string q){
     double res;
-    cout << q;
-    cin >> res;
-    if(cin.fail()){
+    string input;
+    while (true) {
+        cout << q;
+        cin >> input;
+        for (char &c : input) {
+            if (c == ',') {
+                c = '.';
+            }
+        }
+        try {
+            res = stod(input); 
+            break;  
+        } catch (const invalid_argument &) {
+            cout << "Please enter a valid number.\n";
+        }
+
         cin.clear();
         cin.ignore(numeric_limits<streamsize>::max(), '\n');
-        cout << "Please write an integer\n";
-        return monkeyInput(q);
     }
-    cin.ignore(numeric_limits<streamsize>::max(), '\n');
+    cin.ignore(numeric_limits<streamsize>::max(), '\n');  
     return res;
 }
 
@@ -54,9 +66,15 @@ bool ask(string question){
     }
 }
 
-void out(double y, double x, bool first){ 
+void out(double x, double n, bool first){
     static bool answ = false;
+    double y;
     ofstream res;
+    if(x < -5){
+        y = f_one(x, n);
+    }else if(x >= -5){
+        y = f_two(x, n);
+    }
     if(first){
         answ = ask("would you like to also save the result to the file?");
     }
@@ -65,7 +83,7 @@ void out(double y, double x, bool first){
         res << y << endl;
         res.close();
     }
-    cout << "in: " << x << " out: " << y << endl;
+    cout << "in: x: " << x << " n: " << n << "| out: " << y << endl;
 }
 
 int main(){
@@ -80,8 +98,8 @@ int main(){
     "1 for input of a file \n"
     "2 for input of values x and n \n"
     "3 for calculation of values in the given range \n";
-    mode = monkeyInput("Choose your option: ");
     redo:
+    mode = monkeyInput("Choose your option: ");
     switch(mode){
         case 1:
             getFileName:
@@ -97,20 +115,37 @@ int main(){
             break;
         case 2:
             x = monkeyInput("Please enter the number for x: ");
-            n = monkeyInput("Please enter the number for n: ");
+            while(true){
+                n = (int)monkeyInput("Please enter the number for n(it will bw automaticly converted to integer): ");
+                if((n > 3 || (n > -6 && x < -5))){
+                    break;
+                }else{ 
+                    cout << "false input data\n"
+                    "n must be either greater than 3, or greater than -6(if x is less than 5\n"
+                    "try one more time\n";
+                }
+            }
             break;
         case 3:
-            n = monkeyInput("Please enter the number for n: ");
-            a = monkeyInput("Please enter the number where the will cycle start: ");
-            b = monkeyInput("Please enter the number where the will cycle end: ");
-            step = monkeyInput("Please enter the number for step of the cycle: ");
-            if(step <= 0){
-                cout << "step must be greater than 0\n";
-                goto redo;
-            }else if(a >= b){
+            n = (int)monkeyInput("Please enter the number for n(the number will be converted to an integet): ");
+            while(true){
+                a = monkeyInput("Please enter the number where the will cycle start: ");
+                b = monkeyInput("Please enter the number where the will cycle end: ");
+                if(a >= b){
                 cout << "end of the range must be greater than it`s start\n";
-                goto redo;
+                }else{
+                    break;
+                }
             }
+            while(true){
+                step = monkeyInput("Please enter the number for step of the cycle: ");
+                if(step > 0){
+                    break;
+                }else{
+                    cout << "step must be greater than 0\n";
+                }
+            }
+            a -= step;
             break;
         default:
             cout << "please enter value from 1 to 3\n";
@@ -124,11 +159,7 @@ int main(){
             a += step;
         }
         if ((n > 3 || (n > -6 && x < -5)) && !cin.fail()){
-            if(x < -5){
-                out(f_one(x, n), x, is_first);
-            }else if(x >= -5){
-                out(f_two(x, n), x, is_first);
-            }
+            out(x, n, is_first);
             is_first = false;
         }else{
             cout << "false input data\n"
