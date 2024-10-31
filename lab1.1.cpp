@@ -3,7 +3,6 @@
 #include<limits>
 #include <fstream>
 using namespace std;
-
 long int f_one(int x, int n){
     long long y = 0;
     for(int i = -6; i<=n; ++i){
@@ -97,9 +96,10 @@ int main(){
     cout << "Please select mode of input\n"
     "1 for input of a file \n"
     "2 for input of values x and n \n"
-    "3 for calculation of values in the given range \n";
-    redo:
+    "3 for calculation of values in the given range \n"
+    "note, that all extra input after numbers will be ignored\n";
     mode = monkeyInput("Choose your option: ");
+    redo:
     switch(mode){
         case 1:
             getFileName:
@@ -149,6 +149,7 @@ int main(){
             break;
         default:
             cout << "please enter value from 1 to 3\n";
+            mode = monkeyInput("Choose your option: ");
             goto redo;
     }
     while(true){
