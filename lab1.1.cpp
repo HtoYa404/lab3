@@ -2,8 +2,10 @@
 #include<ios>
 #include<limits>
 #include <fstream>
+#include "header.hpp"
 using namespace std;
 long int f_one(int x, int n){
+    if(n <= -6 || x >= -5) throw "invalid input data";
     long long y = 0;
     for(int i = -6; i<=n; ++i){
         y += i + x;
@@ -11,6 +13,7 @@ long int f_one(int x, int n){
     return 4*x*y -9;
 }
 double f_two(double x, int n){
+    if(n<=3) throw "invalid input data";
     double y = 0;
     double z = 1;
     for(int i = 1; i <= n+1; ++i){
@@ -78,14 +81,19 @@ void out(double x, double n, bool first){
         answ = ask("would you like to also save the result to the file?");
     }
     if(answ){
-        res.open("results.txt", ios::app);
+        try{
+            res.open("results.txt", ios::app);
         res << y << endl;
         res.close();
+        }catch(...){
+            throw "incorrect input file";
+        }
     }
     cout << "in: x: " << x << " n: " << n << "| out: " << y << endl;
 }
 
 int main(){
+    try{
     int n, mode;
     double x, b, step, a;
     bool is_first;
@@ -164,7 +172,7 @@ int main(){
             is_first = false;
         }else{
             cout << "false input data\n"
-            "n must be either greater than 3, or greater than -6(if x is less than 5\n"
+            "n must be either greater than 3, or greater than -6(if x is less than 5)\n"
             "try one more time\n";
             goto redo;
         }
@@ -180,5 +188,8 @@ int main(){
             }
             goto start;
         }
+    }
+    }catch(...){
+        cout << "an unknown error has ocurred";
     }
 }
