@@ -46,8 +46,8 @@ double monkeyInput(const string& q = "") {
         } catch (const invalid_argument&) {
             if (!isTesting) cout << "Invalid input, try again.\n";
         }
+        if (isTesting) break;
     }
-    if (isTesting) return 0;
     return res;
 }
 
