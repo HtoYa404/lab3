@@ -2,8 +2,8 @@
 #define HEADER_HPP
 
 #include <iostream>
-#include<ios>
-#include<limits>
+#include <ios>
+#include <limits>
 #include <fstream>
 using namespace std;
 extern bool isTesting;
